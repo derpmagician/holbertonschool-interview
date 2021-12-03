@@ -16,5 +16,3 @@ def pascal_triangle(n):
         li = [int(n) for n in str(num)]
         my_list.append(li)
     return my_list
-
-    
