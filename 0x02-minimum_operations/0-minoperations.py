@@ -11,4 +11,11 @@ def minOperations(n):
     n = number of times to print the letter H.
     if n is not possible, return 0
     """
-    minOps = []
+    minOps = 0
+    div = 2
+    while (isinstance(n, int) and n > 1):
+        while (n % div):
+            div += 1
+        minOps += div
+        n = n // div
+    return minOps
