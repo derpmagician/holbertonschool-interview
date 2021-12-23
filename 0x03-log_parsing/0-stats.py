@@ -6,52 +6,39 @@ import re
 import sys
 
 
-def print_log_parsing(CODES, file_size):
+def printst(dictionary, size):
+    """Print function
     """
-    function that print parsing logs
-    args:
-        codes: is a dictionary of status code
-        file_size: is the size of status
-    """
-    print("File size: {}".format(file_size))
-    for key, value in sorted(CODES.items()):
-        print("{}: {}".format(key, value))
+    d = sorted(dictionary.keys())
+    print("File size: {:d}".format(size))
+    for i in d:
+        if dictionary[i] != 0:
+            print("{}: {:d}".format(i, dictionary[i]))
 
+count = 0
+size = 0
+dic = {"200": 0, "301": 0, "400": 0, "401": 0,
+       "403": 0, "404": 0, "405": 0, "500": 0}
 
-def run():
-    """"
-    function that search the status code and size number
-    """
-    PATTERN = '([\\d]{3})\\s([\\d]{1,4})$'
-    CODES = {}
-    STOP = 10
-    step = 1
-    size = 0
-
-    while True:
-
-        try:
-            line = input()
-
-            status, file_size = re.search(PATTERN, line).group().split()
-
-            size += int(file_size)
-
+try:
+    with open(0) as f:
+        for line in f:
+            count += 1
+            arr = line.split()
             try:
-                if CODES[status]:
-                    CODES[status] += 1
-            except KeyError:
-                CODES[status] = 1
+                size += int(arr[-1])
+            except:
+                pass
+            try:
+                st = arr[-2]
+                if st in dic:
+                    dic[st] += 1
+            except:
+                pass
+            if count % 10 == 0:
+                printst(dic, size)
+        printst(dic, size)
 
-            if step == STOP:
-                print_log_parsing(CODES, size)
-                step = 1
-
-            step += 1
-        except (KeyboardInterrupt, EOFError):
-            print_log_parsing(CODES, size)
-            exit()
-
-
-if __name__ == '__main__':
-    run()
+except KeyboardInterrupt:
+    printst(dic, size)
+    raise
