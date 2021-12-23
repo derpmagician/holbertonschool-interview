@@ -2,12 +2,11 @@
 """
 Python script takes URL from stdin and compute exact metrics
 """
-import re
-import sys
 
 
 def printst(dictionary, size):
-    """Print function
+    """
+    Print function
     """
     d = sorted(dictionary.keys())
     print("File size: {:d}".format(size))
