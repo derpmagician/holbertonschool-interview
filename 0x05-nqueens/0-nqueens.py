@@ -1,70 +1,67 @@
 #!/usr/bin/python3
-"""
-Module for 0x0C. N Queens.
-"""
-from sys import argv, exit
 
 
-def solveNQueens(n):
-    """
-    Program that solves the N queens problem
-    """
-    res = []
-    queens = [-1] * n
-
-    def dfs(index):
-        """
-        Recursively resolves the N queens problem
-        """
-        if index == len(queens):
-            res.append(queens[:])
-            return
-        for i in range(len(queens)):
-            queens[index] = i
-            if valid(index):  # pruning
-                dfs(index + 1)
-
-    def valid(n):
-        """
-        Method that checks if a position in the board is valid
-        """
-        for i in range(n):
-            if abs(queens[i] - queens[n]) == n - i:
-                return False
-            if queens[i] == queens[n]:
-                return False
-        return True
-
-    def make_all_boards(res):
-        """
-        Method that builts the List that be returned
-        """
-        actual_boards = []
-        for queens in res:
-            board = []
-            for row, col in enumerate(queens):
-                board.append([row, col])
-            actual_boards.append(board)
-        return actual_boards
-
-    dfs(0)
-    return make_all_boards(res)
+def print_NQueen(square_y, N):
+    """Create a the format and print the result
+    result = possible variant of the queen position
+    in the chess game"""
+    result = []
+    i = 0
+    for a in square_y:
+        new = []
+        new.append(i)
+        new.append(a)
+        result.append(new)
+        i = i + 1
+    print(result)
 
 
-if __name__ == "__main__":
-    if len(argv) < 2:
-        print('Usage: nqueens N')
-        exit(1)
-    try:
-        n = int(argv[1])
-    except ValueError:
-        print('N must be a number')
-        exit(1)
+def check_move(pos_x, square_y):
+    """Check if the square it is available to move or not
+        we check the position between one queen and the
+        posible position of the new queen"""
+    for i in range(pos_x):
+        if square_y[i] == square_y[pos_x]:
+            return False
+        if pos_x - i == abs(square_y[pos_x] - square_y[i]):
+            return False
+    return True
 
-    if n < 4:
-        print('N must be at least 4')
-        exit(1)
+
+def solve_NQueen(N, pos_x, square_y):
+    """Backtracking function:
+    - N: Size of chessboard
+    - pos_x: actual position
+    - square_x: list of solutions to move the queen"""
+    if (pos_x == N):
+        print_NQueen(square_y, N)
     else:
-        result = solveNQueens(n)
-        for row in result:
-            print(row)
+        for i in range(N):
+            square_y.append(i)
+            if (check_move(pos_x, square_y)):
+                solve_NQueen(N, pos_x + 1, square_y)
+            square_y.pop(-1)
+
+if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        sys.exit(1)
+
+    N = sys.argv[1]
+
+    try:
+        N = int(N)
+    except:
+        print("N must be a number")
+        exit(1)
+
+    if (N < 4):
+        print("N must be at least 4")
+        sys.exit(1)
+
+    # initialize chess game
+    square_y = []
+    pos_x = 0
+    solve_NQueen(N, pos_x, square_y)
