@@ -11,35 +11,29 @@ def solveNQueens(n):
     """
     res = []
     queens = [-1] * n
-    # queens is a one-dimension array, like [1, 3, 0, 2] means
-    # index represents row no and value represents col no
 
     def dfs(index):
         """
         Recursively resolves the N queens problem
         """
-        if index == len(queens):  # n queens have been placed correctly
+        if index == len(queens):
             res.append(queens[:])
-            return  # backtracking
+            return
         for i in range(len(queens)):
             queens[index] = i
             if valid(index):  # pruning
                 dfs(index + 1)
 
-    # check whether nth queens can be placed
     def valid(n):
         """
         Method that checks if a position in the board is valid
         """
         for i in range(n):
-            if abs(queens[i] - queens[n]) == n - i:  # same diagonal
+            if abs(queens[i] - queens[n]) == n - i:
                 return False
-            if queens[i] == queens[n]:  # same column
+            if queens[i] == queens[n]:
                 return False
         return True
-
-    # given queens = [1,3,0,2] this function returns
-    # [[0, 1], [1, 3], [2, 0], [3, 2]]
 
     def make_all_boards(res):
         """
