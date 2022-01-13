@@ -1,44 +1,70 @@
 #!/usr/bin/python3
-"""Module to solve n-queens problem"""
-from sys import argv
+"""
+Module for 0x0C. N Queens.
+Holberton School
+Specializations - Interview Preparation ― Algorithms
+"""
+from sys import argv, exit
 
-argc = len(argv)
-if argc != 2:
-    print('Usage: nqueens N')
-    exit(1)
 
-for c in argv[1]:
-    if ord(c) < ord('0') or ord(c) > ord('9'):
+def solveNQueens(n):
+    """Program that solves the N queens problem"""
+    res = []
+    queens = [-1] * n
+    # queens is a one-dimension array, like [1, 3, 0, 2] means
+    # index represents row no and value represents col no
+
+    def dfs(index):
+        """Recursively resolves the N queens problem"""
+        if index == len(queens):  # n queens have been placed correctly
+            res.append(queens[:])
+            return  # backtracking
+        for i in range(len(queens)):
+            queens[index] = i
+            if valid(index):  # pruning
+                dfs(index + 1)
+
+    # check whether nth queens can be placed
+    def valid(n):
+        """Method that checks if a position in the board is valid"""
+        for i in range(n):
+            if abs(queens[i] - queens[n]) == n - i:  # same diagonal
+                return False
+            if queens[i] == queens[n]:  # same column
+                return False
+        return True
+
+    # given queens = [1,3,0,2] this function returns
+    # [[0, 1], [1, 3], [2, 0], [3, 2]]
+
+    def make_all_boards(res):
+        """Method that builts the List that be returned"""
+        actual_boards = []
+        for queens in res:
+            board = []
+            for row, col in enumerate(queens):
+                board.append([row, col])
+            actual_boards.append(board)
+        return actual_boards
+
+    dfs(0)
+    return make_all_boards(res)
+
+
+if __name__ == "__main__":
+    if len(argv) < 2:
+        print('Usage: nqueens N')
+        exit(1)
+    try:
+        n = int(argv[1])
+    except ValueError:
         print('N must be a number')
         exit(1)
 
-N = int(argv[1])
-if N < 4:
-    print('N must be at least 4')
-    exit(1)
-
-
-def put_queen(queens_pos, row, col):
-    """queen position"""
-    for pos_pair in queens_pos:
-        [r, c] = pos_pair
-        if r == row or c == col or \
-           abs(r - row) == abs(c - col):
-            return False
-    return True
-
-
-
-def n_queens(N, queens_pos, row):
-    """start algor"""
-    if row == N:
-        print(queens_pos)
-        return
-
-    for col in range(N):
-        if put_queen(queens_pos, row, col):
-            queens_pos.append([row, col])
-            n_queens(N, queens_pos, row + 1)
-            queens_pos.pop()
-
-n_queens(N, [], 0)
+    if n < 4:
+        print('N must be at least 4')
+        exit(1)
+    else:
+        result = solveNQueens(n)
+        for row in result:
+            print(row)
