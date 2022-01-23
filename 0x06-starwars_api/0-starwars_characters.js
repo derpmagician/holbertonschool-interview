@@ -1,31 +1,32 @@
 #!/usr/bin/node
-const request = require('request');
-const url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`;
 
-request(url, (error, response, body) => {
-  if (!error) {
-    const res = JSON.parse(body);
-    const characters = res.characters;
-    if (characters.length > 0) {
-      characterRequest(0, characters[0], characters, characters.length);
-    }
-  } else {
-    console.log(error);
-  }
-});
-
-function characterRequest (idx, urlChar, characters, limit) {
-  if (idx === limit) {
+function order (characters, idx) {
+  if (idx >= characters.length) {
     return;
   }
-  request(urlChar, function (error, response, body) {
-    if (!error) {
-      const response = JSON.parse(body);
-      console.log(response.name);
-      idx++;
-      characterRequest(idx, characters[idx], characters, limit);
+  request(characters[idx], function (err, response, body) {
+    if (err) {
+      console.log(err);
+    } else if (response.statusCode === 200) {
+      const person = JSON.parse(body);
+      console.log(person.name);
+      return order(characters, ++idx);
     } else {
-      console.error('error:', error);
+      console.log('error ocurred, Status code: ' + response.statusCode);
     }
   });
 }
+
+const request = require('request');
+const url = 'https://swapi-api.hbtn.io/api/films/';
+const ep = process.argv[2];
+request(url + ep, function (err, response, body) {
+  if (err) {
+    console.log(err);
+  } else if (response.statusCode === 200) {
+    const jsobj = JSON.parse(body);
+    order(jsobj.characters, 0);
+  } else {
+    console.log('error ocurred, Status code: ' + response.statusCode);
+  }
+});
